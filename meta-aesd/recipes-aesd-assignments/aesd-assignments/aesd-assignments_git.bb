@@ -8,7 +8,7 @@ SRC_URI = "git://git@github.com/cu-ecen-aeld/assignments-3-and-later-IvanVeloz;p
 
 PV = "1.0+git${SRCPV}"
 # DONE: set to reference a specific commit hash in your assignment repo
-SRCREV = "4d6997041a9925e34fbfc41b83b8433bccf3b682"
+SRCREV = "9c7b339496740381a63d221342d529834b05ff56"
 
 # This sets your staging directory based on WORKDIR, where WORKDIR is defined at 
 # https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-WORKDIR
@@ -16,10 +16,10 @@ SRCREV = "4d6997041a9925e34fbfc41b83b8433bccf3b682"
 # in your assignments repo
 S = "${WORKDIR}/git/server"
 
-# TODO: Add the aesdsocket application and any other files you need to install
+# DONE: Add the aesdsocket application and any other files you need to install
 # See https://git.yoctoproject.org/poky/plain/meta/conf/bitbake.conf?h=kirkstone
-FILES:${PN} += "${bindir}/aesdsocket"
-# TODO: customize these as necessary for any libraries you need for your application
+FILES:${PN} += "${S}/aesdsocket ${S}/aesdsocket-start-stop.sh"
+# DONE: customize these as necessary for any libraries you need for your application
 # (and remove comment)
 TARGET_LDFLAGS += "-pthread -lrt"
 
@@ -32,11 +32,21 @@ do_compile () {
 }
 
 do_install () {
-	# TODO: Install your binaries/scripts here.
+	# DONE: Install your binaries/scripts here.
 	# Be sure to install the target directory with install -d first
 	# Yocto variables ${D} and ${S} are useful here, which you can read about at 
 	# https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-D
 	# and
 	# https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-S
 	# See example at https://github.com/cu-ecen-aeld/ecen5013-yocto/blob/ecen5013-hello-world/meta-ecen5013/recipes-ecen5013/ecen5013-hello-world/ecen5013-hello-world_git.bb
+	# D = ${WORKDIR}/image
+	# S = "${WORKDIR}/git"
+	install -d "${D}/usr/bin/"
+	install -m 0755 "${S}/aesdsocket" "${D}/usr/bin/aesdsocket"
+	install -d ${D}/etc/init.d/
+	install -m 0755 "${S}/aesdsocket-start-stop.sh" "${D}/etc/init.d/aesdsocket-start-stop.sh"
+	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc2.d/S99aesdsocket.sh"
+	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc3.d/S99aesdsocket.sh"
+	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc4.d/S99aesdsocket.sh"
+	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc5.d/S99aesdsocket.sh"
 }
