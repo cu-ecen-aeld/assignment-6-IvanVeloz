@@ -45,8 +45,6 @@ do_install () {
 	install -m 0755 "${S}/aesdsocket" "${D}/usr/bin/aesdsocket"
 	install -d ${D}/etc/init.d/
 	install -m 0755 "${S}/aesdsocket-start-stop.sh" "${D}/etc/init.d/aesdsocket-start-stop.sh"
-	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc2.d/S99aesdsocket.sh"
-	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc3.d/S99aesdsocket.sh"
-	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc4.d/S99aesdsocket.sh"
-	ln -sf "../init.d/aesdsocket-start-stop.sh ${D}/etc/rc5.d/S99aesdsocket.sh"
+	mkdir -p "${D}/etc/rc5.d/"
+	ln -sf "../init.d/aesdsocket-start-stop.sh" "${D}/etc/rc5.d/S99aesdsocket"
 }
